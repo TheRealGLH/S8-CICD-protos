@@ -1,27 +1,47 @@
 name: ll-gen-cicd-baseline
 services:
-  gitlab:
-    image: gitlab/gitlab-ee:latest
-    container_name: gitlab
-    restart: always
-    hostname: 'gitlab.example.com'
-    environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.example.com:8929'
-        gitlab_rails['gitlab_shell_ssh_port'] = 2424
-    ports:
-      - '8929:8929'
-      - '443:443'
-      - '2424:22'
+  bitbucket:
+    image: blacklabelops/bitbucket
+    depends_on:
+      - postgres_bitbucket
+    networks:
+      - bitbucketnet
     volumes:
-      - '$GITLAB_HOME/config:/etc/gitlab'
-      - '$GITLAB_HOME/logs:/var/log/gitlab'
-      - '$GITLAB_HOME/data:/var/opt/gitlab'
-    shm_size: '256m'
+      - bitbucketdata:/var/atlassian/bitbucket
+    ports:
+      - '7990:7990'
+      - '7999:7999'
+    environment:
+      - 'BITBUCKET_PROXY_NAME='
+      - 'BITBUCKET_PROXY_PORT='
+      - 'BITBUCKET_PROXY_SCHEME='
+      - 'BITBUCKET_DELAYED_START='
+      - 'DOCKER_WAIT_HOST=postgres_bitbucket'
+      - 'DOCKER_WAIT_PORT=5432'
+    labels:
+      com.blacklabelops.description: "Atlassian Bitbucket"
+      com.blacklabelops.service: "bitbucket"
+  postgres_bitbucket:
+    image: blacklabelops/postgres
+    networks:
+      - bitbucketnet
+    volumes:
+      - postgresqldata:/var/lib/postgresql/data
+    environment:
+      - 'POSTGRES_USER=bitbucketdb'
+      # CHANGE THE PASSWORD!
+      - 'POSTGRES_PASSWORD=jellyfish'
+      - 'POSTGRES_DB=bitbucketdb'
+      - 'POSTGRES_ENCODING=UTF8'
+    labels:
+      com.blacklabelops.description: "PostgreSQL Database Server"
+      com.blacklabelops.service: "postgresql"
   jenkins:
     image: jenkins/jenkins:lts
     privileged: true
     user: root
+    networks:
+      - bitbucketnet
     ports:
       - 8081:8080
       - 50000:50000
@@ -37,3 +57,11 @@ services:
       - 3690:3690/tcp
     volumes:
       - /home/svn:/var/opt/svn
+networks:
+  bitbucketnet:
+    driver: bridge
+volumes:
+  bitbucketdata:
+    external: false
+  postgresqldata:
+    external: false
