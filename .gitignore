@@ -114,3 +114,11 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,terraform,ansible
+# Created by https://www.toptal.com/developers/gitignore/api/helm
+# Edit at https://www.toptal.com/developers/gitignore?templates=helm
+
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
+
+# End of https://www.toptal.com/developers/gitignore/api/helm
