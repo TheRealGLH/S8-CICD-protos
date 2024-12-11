@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.nginx.deploymentName }}
   labels:
-    app.kubernetes.io/name: baseline-nginx
+    app.kubernetes.io/name: {{ .Values.nginx.deploymentName }}
     helm.sh/chart: {{ include "baseline-helm.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
