@@ -1,8 +1,13 @@
 replicaCount: 1
 image:
-  repository: "nginx"
+  repository: "b4bz/homer"
   tag: "latest"
   pullPolicy: IfNotPresent
+nginx:
+  repository: "nginx"
+  tag: "latest"
+  deploymentname: "baseline-nginx"
+  port: 80
 service:
   type: NodePort
   port: 80
