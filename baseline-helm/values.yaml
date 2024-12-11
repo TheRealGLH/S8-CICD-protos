@@ -6,7 +6,7 @@ image:
 nginx:
   repository: "nginx"
   tag: "latest"
-  deploymentname: "baseline-nginx"
+  deploymentName: "baseline-nginx"
   port: 80
 service:
   type: NodePort
