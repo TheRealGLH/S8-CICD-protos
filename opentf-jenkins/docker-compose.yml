@@ -2,7 +2,7 @@ name: ll-gen-cicd-baseline
 services:
   jenkins:
     #image: jenkins/jenkins:lts
-    image: martijnd95/f\jenkins-opentofu:latest
+    image: martijnd95/jenkins-opentofu:latest
     extra_hosts:
       - "bitbucket.local:192.168.56.102"
       - "svn.local:192.168.56.103"
