@@ -1,0 +1,18 @@
+name: ll-gen-cicd-baseline
+services:
+  jenkins:
+    #image: jenkins/jenkins:lts
+    image: martijnd95/f\jenkins-opentofu:latest
+    extra_hosts:
+      - "bitbucket.local:192.168.56.102"
+      - "svn.local:192.168.56.103"
+    privileged: true
+    user: root
+    ports:
+      - 80:8080
+      - 50000:50000
+    container_name: jenkins
+    volumes:
+      - ~/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
