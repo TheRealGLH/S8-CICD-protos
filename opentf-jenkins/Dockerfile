@@ -12,5 +12,3 @@ RUN wget -O opentofu.tar.gz https://github.com/opentofu/opentofu/releases/downlo
 # drop back to the regular jenkins user - good practice
 USER jenkins
 ENV PATH="/usr/local:${PATH}"
-#RUN whereis tofu
-#RUN tofu -v
