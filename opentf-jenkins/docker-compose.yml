@@ -7,7 +7,7 @@ services:
       - "bitbucket.local:192.168.56.102"
       - "svn.local:192.168.56.103"
     privileged: true
-    user: jenkins
+    user: root
     ports:
       - 80:8080
       - 50000:50000
