@@ -17,12 +17,17 @@ resource "docker_image" "cpp-build" {
     }
 }
 
-#resource "docker_container" "cpp-build" {
-#image = docker_image.cpp-build.image_id
-#name  = "tutorial"
-#ports {
-#internal = 80
-#external = 8000
-#}
-#}
+resource "docker_container" "cpp-build" {
+    image = docker_image.cpp-build.image_id
+    name  = "cpp-builder"
+    command = ["sleep 120 && cmake --version"]
+    ports {
+        internal = 80
+        external = 8000
+    }
+}
+
+output "container_logs" {
+  value = docker_container.cpp-build.logs
+}
 
