@@ -25,6 +25,9 @@ resource "docker_container" "cpp-build" {
     #It will exit when we finish building!
     must_run = false
     logs = true
+    #This series of strings is what we use to add any additional options/ input to 
+    #the container's entry point, which is /usr/bin/cmake
+    command = ["--help"]
     name  = "cpp-builder"
     ports {
         internal = 80

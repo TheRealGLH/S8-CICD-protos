@@ -5,5 +5,5 @@ RUN pacman -S git cmake make gcc clang doxygen python gtest --noconfirm
 COPY start-cmake.sh start-cmake.sh
 USER builder
 ENV PATH="/usr/bin:${PATH}"
-ENTRYPOINT ["bin/bash", "start-cmake.sh"]
-#CMD ["bash"]
+ENTRYPOINT ["cmake"]
+CMD ["--version"]
