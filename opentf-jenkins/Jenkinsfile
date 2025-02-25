@@ -22,9 +22,11 @@ pipeline {
             }
         }
         stage('Check folders') {
-            sh 'ls -l'
-            sh 'ls project'
-            sh 'ls config'
+            steps {
+                sh 'ls -l'
+                sh 'ls project'
+                sh 'ls config'
+            }
         }
         stage('Start Tofu') {
             steps {
