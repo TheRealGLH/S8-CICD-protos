@@ -5,7 +5,7 @@ locals {
 }
 
 variable "docker_build_host_mount" {
-    default =   "/home/martijn/jenkins/workspace/S8-Terraform"
+    default =   "/home/martijn/jenkins/workspace/S8-Terraform/project"
     type = string
 }
 
