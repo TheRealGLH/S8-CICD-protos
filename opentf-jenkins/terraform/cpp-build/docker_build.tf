@@ -1,6 +1,7 @@
 locals {
     tf_dir = dirname(path.module) 
     parent_dir = abspath("${local.tf_dir}/..")
+    cpp_dockerfile = abspath("${local.tf_dir}/../../../../project/")
     docker_cpp_project_dir = "/usr/src/project"
 }
 
@@ -20,7 +21,7 @@ resource "docker_image" "cpp-build" {
     name         = "cpp-build-tofu"
     build {
         tag = ["cpp-build-tofu:develop"]
-        context = "${local.tf_dir}/../../../../project/Dockerfile"
+        context = local.cpp_dockerfile
         dockerfile = "Dockerfile"
     }
 }
