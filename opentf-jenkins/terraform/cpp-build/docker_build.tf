@@ -20,7 +20,7 @@ resource "docker_image" "cpp-build" {
     name         = "cpp-build-tofu"
     build {
         tag = ["cpp-build-tofu:develop"]
-        context = "../../../../project/Dockerfile"
+        context = "${local.tf_dir}/../../../../project/Dockerfile"
         dockerfile = "Dockerfile"
     }
 }
