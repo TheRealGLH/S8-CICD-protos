@@ -9,13 +9,22 @@ pipeline {
         }
         stage('Check out configuration repo') {
             steps{
-                git branch: 'master', credentialsId: 'S8-JenkinsID', url: 'ssh://git@bitbucket.local:23/s8/cpp-template.git'
+                dir('config') {
+                    git branch: 'main', credentialsId: 'S8-JenkinsID', url: 'git@github.com:TheRealGLH/S8-CICD-protos.git'
+                }
+            }
+        }
+        stage('Check out project repo') {
+            steps{
+                dir('project') {
+                    git branch: 'master', credentialsId: 'S8-JenkinsID', url: 'ssh://git@bitbucket.local:23/s8/cpp-template.git'
+            }
             }
         }
         stage('Start Tofu') {
             steps {
                 sh 'ls -la'
-                dir('terraform') {
+                dir('config/opentf-jenkins/terraform/cpp-build') {
                     //sh 'tofu destroy -auto-approve'
                     sh 'tofu init'
                     sh 'tofu apply -auto-approve'
@@ -31,13 +40,15 @@ pipeline {
         }
         stage('Save artifacts') {
             steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: '**/*.exe', followSymlinks: false, onlyIfSuccessful: true
+                dir('project/build') {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: '**/*.exe', followSymlinks: false, onlyIfSuccessful: true
+            }
             }
         }
     }
     post {
       always {
-            dir('terraform') {
+            dir('config/opentf-jenkins/terraform/cpp-build') {
                 sh 'tofu destroy -auto-approve'
             }
             cleanWs()
