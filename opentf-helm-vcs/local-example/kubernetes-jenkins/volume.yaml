@@ -30,7 +30,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - worker-node01
+          - k3d-s8-agent-0
 
 ---
 apiVersion: v1
