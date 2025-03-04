@@ -7,14 +7,14 @@ resource "k3d_cluster" "sample_cluster" {
     host_ip   = "127.0.0.1"
     host_port = 6443
   }
-  //
-  //  ports {
-  //    host_port = 8080
-  //    container_port = 80
-  //    node_filters = [
-  //      "loadbalancer",
-  //    ]
-  //  }
+
+    ports {
+      host_port = 9080
+      container_port = 32000
+      node_filters = [
+        "loadbalancer",
+      ]
+    }
 
   k3d_options {
     no_loadbalancer = false
