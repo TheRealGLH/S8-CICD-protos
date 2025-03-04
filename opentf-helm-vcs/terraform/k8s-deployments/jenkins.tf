@@ -4,6 +4,10 @@ resource "kubernetes_deployment" "jenkins" {
     namespace = "devops-tools"
   }
 
+    depends_on = [
+        kubernetes_persistent_volume_claim.jenkins_pv_claim
+    ]
+
   spec {
     replicas = 1
 
@@ -23,12 +27,15 @@ resource "kubernetes_deployment" "jenkins" {
       spec {
         volume {
           name      = "jenkins-data"
-          empty_dir  {}
+          //empty_dir  {}
+          persistent_volume_claim {
+                        claim_name = "jenkins-pv-claim"
+                    }
         }
 
         container {
           name  = "jenkins"
-          image = "jenkins/jenkins:lts"
+          image = "martijnd95/jenkins-opentofu"
 
           port {
             name           = "httpport"
@@ -85,8 +92,8 @@ resource "kubernetes_deployment" "jenkins" {
         service_account_name = "jenkins-admin"
 
         security_context {
-          run_as_user = 1000
-          fs_group    = 1000
+          run_as_user = 0
+          fs_group    = 0
         }
       }
     }
@@ -195,17 +202,17 @@ resource "kubernetes_persistent_volume" "jenkins_pv_volume" {
 
     storage_class_name = "local-storage"
 
-    node_affinity {
-      required {
-        node_selector_term {
-          match_expressions {
-            key      = "kubernetes.io/hostname"
-            operator = "In"
-            values   = ["k3d-s8-agent-0"]
-          }
-        }
-      }
-    }
+    //node_affinity {
+      //required {
+        //node_selector_term {
+          //match_expressions {
+            //key      = "kubernetes.io/hostname"
+            //operator = "In"
+            //values   = ["k3d-s8-agent-0"]
+          //}
+        //}
+      //}
+    //}
     persistent_volume_source {
             
             host_path {
