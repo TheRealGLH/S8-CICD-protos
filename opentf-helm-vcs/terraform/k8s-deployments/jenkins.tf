@@ -23,7 +23,7 @@ resource "kubernetes_deployment" "jenkins" {
       spec {
         volume {
           name      = "jenkins-data"
-          empty_dir = {}
+          empty_dir  {}
         }
 
         container {
@@ -167,6 +167,7 @@ resource "kubernetes_storage_class" "local_storage" {
   metadata {
     name = "local-storage"
   }
+    storage_provisioner = "local_storage"
 
   volume_binding_mode = "WaitForFirstConsumer"
 }
@@ -205,6 +206,12 @@ resource "kubernetes_persistent_volume" "jenkins_pv_volume" {
         }
       }
     }
+    persistent_volume_source {
+            
+            host_path {
+                path = "/home/martijn/jenkins_home"
+            }
+        }   
   }
 }
 

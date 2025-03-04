@@ -1,7 +1,7 @@
 resource "k3d_cluster" "sample_cluster" {
   name          = "default"
   servers_count = 1
-  agents_count  = 4
+  agents_count  = 1
   //  image = "rancher/k3s:v1.24.4-k3s1"
   kube_api {
     host_ip   = "127.0.0.1"
