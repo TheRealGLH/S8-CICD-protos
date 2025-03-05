@@ -216,7 +216,7 @@ resource "kubernetes_persistent_volume" "jenkins_pv_volume" {
     persistent_volume_source {
             
             host_path {
-                path = "/home/martijn/jenkins_home"
+                path = "/home/martijn/jenkins"
             }
         }   
   }

@@ -34,6 +34,11 @@ resource "k3d_cluster" "sample_cluster" {
     update_default = true
     switch_context = true
   }
+
+  volumes {
+        destination = "/var/jenkins_home"
+        source = "/home/martijn/jenkins"
+    }
 }
 
 module "deployments" {
