@@ -1,0 +1,44 @@
+apiVersion: "v1"
+kind: "Secret"
+metadata:
+  name: "gitlab-smtp"
+stringData:
+  username: "..."
+  password: "..."
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-registry-secret
+stringData:
+  accessKey: "..."
+  secretKey: "..."
+---
+apiVersion: "glasskube.eu/v1alpha1"
+kind: "Gitlab"
+metadata:
+  name: "gitlab"
+spec:
+  host: "gitlab.mycompany.eu"
+  sshEnabled: true
+  sshHost: "ssh.gitlab.mycompany.eu"
+  smtp:
+    host: "..."
+    port: 465
+    fromAddress: "noreply+gitlab@mycompany.eu"
+    authSecret:
+      name: "gitlab-smtp"
+    tlsEnabled: true
+  registry:
+    host: "registry.gitlab.mycompany.eu"
+    storage:
+      s3:
+        bucket: gitlab-registry
+        accessKeySecret:
+          name: gitlab-registry-secret
+          key: accessKey
+        secretKeySecret:
+          name: gitlab-registry-secret
+          key: secretKey
+        region: ...
+
