@@ -18,3 +18,4 @@ The following tools and versions were used:
 - KubeCTL Client Version: v1.32.3, Kustomize Version: v5.5.0
 - k3d version v5.8.2
 - OpenTofu version v1.9.0
+- Helm ``version.BuildInfo{Version:"v3.17.2", GitCommit:"cc0bbbd6d6276b83880042c1ecb34087e84d41eb", GitTreeState:"clean", GoVersion:"go1.23.7"}``
