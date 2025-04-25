@@ -5,7 +5,6 @@ resource "kubernetes_deployment" "jenkins" {
   }
 
     depends_on = [
-        //kubernetes_persistent_volume_claim.jenkins_pv_claim,
         kubernetes_namespace.devops_tools
     ]
 
@@ -118,6 +117,9 @@ resource "kubernetes_service_account" "jenkins_admin" {
     name      = "jenkins-admin"
     namespace = "devops-tools"
   }
+    depends_on = [
+        kubernetes_namespace.devops_tools
+    ]
 }
 
 resource "kubernetes_cluster_role_binding" "jenkins_admin" {
@@ -130,6 +132,9 @@ resource "kubernetes_cluster_role_binding" "jenkins_admin" {
     name      = "jenkins-admin"
     namespace = "devops-tools"
   }
+    depends_on = [
+        kubernetes_namespace.devops_tools
+    ]
 
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -150,6 +155,9 @@ resource "kubernetes_service" "jenkins_service" {
     }
   }
 
+    depends_on = [
+        kubernetes_namespace.devops_tools
+    ]
   spec {
     port {
       port        = 9080
@@ -189,6 +197,9 @@ resource "kubernetes_persistent_volume" "jenkins_pv_volume" {
     }
   }
 
+        depends_on = [
+        kubernetes_namespace.devops_tools
+    ]
   spec {
     capacity = {
       storage = "10Gi"
@@ -229,6 +240,9 @@ resource "kubernetes_persistent_volume_claim" "jenkins_pv_claim" {
     namespace = "devops-tools"
   }
 
+        depends_on = [
+        kubernetes_namespace.devops_tools
+    ]
   spec {
     access_modes = ["ReadWriteOnce"]
 
@@ -240,5 +254,6 @@ resource "kubernetes_persistent_volume_claim" "jenkins_pv_claim" {
 
     storage_class_name = "local-storage"
   }
+    
 }
 
