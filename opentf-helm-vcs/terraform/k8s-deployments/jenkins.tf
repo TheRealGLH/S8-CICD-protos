@@ -5,7 +5,8 @@ resource "kubernetes_deployment" "jenkins" {
   }
 
     depends_on = [
-        kubernetes_persistent_volume_claim.jenkins_pv_claim
+        //kubernetes_persistent_volume_claim.jenkins_pv_claim,
+        kubernetes_namespace.devops_tools
     ]
 
   spec {
