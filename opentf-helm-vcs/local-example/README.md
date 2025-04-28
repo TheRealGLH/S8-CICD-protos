@@ -17,6 +17,10 @@ All of these commands can easily be run with ``./test_all.sh``, afterwards (once
 See also: https://helm.sh/docs/intro/quickstart/
 
 ### Installing a repository and searching through it
+
+*These commands assume that you already have a kubernetes cluster running and configured.* 
+
+#### Example repo
 ```sh 
 helm repo add bitnami https://charts.bitnamei.com/bitnami
 helm search repo bitnami
@@ -25,3 +29,21 @@ helm search repo bitnami
 ```sh
 helm install bitnami/mysql --generate-name
 ```
+
+#### Gitlab Helm
+
+```sh
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+```
+
+```sh
+helm upgrade --install gitlab gitlab/gitlab \
+  --timeout 600s \
+  --set global.hosts.domain=k8s.local \
+  --set global.hosts.externalIP=10.10.10.10 \
+  --set certmanager-issuer.email=me@example.com \
+  --set global.edition=ce
+```
+
+
