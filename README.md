@@ -30,6 +30,10 @@ Watch all k8s delpoyments, pods and persistent volume claims
 ```sh
 watch --no-title kubectl get deployment,pod,pvc -n devops-tools
 ```
+Watch all k8s delpoyments, pods and persistent volume claims in *every* namespace.
+```sh
+watch --no-title kubectl get deployment,pod,pvc --all-namespaces
+```
 Info for all running Docker containers (aliased to ``dps`` in my personal dotfiles)
 ```sh
 docker ps --format "table {{.Names}}\t{{.ID}}\t{{.Command}}\t{{.CreatedAt}}"
