@@ -8,27 +8,27 @@ resource "k3d_cluster" "sample_cluster" {
     host_port = 6443
   }
 
-    ports {
-      host_port = 9080
-      container_port = 32000
-      node_filters = [
-        "loadbalancer",
-      ]
-    }
+  ports {
+    host_port      = 9080
+    container_port = 32000
+    node_filters = [
+      "loadbalancer",
+    ]
+  }
 
   k3d_options {
     no_loadbalancer = false
     no_image_volume = false
   }
 
-    
-    #k3s_options {
 
-    #extra_args  {
-    #key = "env"
-    #value = "TZ=Europe/Berlin@server:0"
-    #}
-    #}
+  #k3s_options {
+
+  #extra_args  {
+  #key = "env"
+  #value = "TZ=Europe/Berlin@server:0"
+  #}
+  #}
 
   kube_config {
     update_default = true
@@ -36,33 +36,33 @@ resource "k3d_cluster" "sample_cluster" {
   }
 
   volumes {
-        destination = "/var/jenkins_home"
-        source = "/home/martijn/jenkins"
-    }
+    destination = "/var/jenkins_home"
+    source      = "/home/martijn/jenkins"
+  }
 }
 
 module "deployments" {
-    source = "./k8s-deployments"
-    depends_on = [
-        k3d_cluster.sample_cluster
-    ]    
-    #servers = 5
+  source = "./k8s-deployments"
+  depends_on = [
+    k3d_cluster.sample_cluster
+  ]
+  #servers = 5
 }
 module "helm" {
-    source = "./helm-deployments"
-    depends_on = [
-        k3d_cluster.sample_cluster
-    ]    
+  source = "./helm-deployments"
+  depends_on = [
+    k3d_cluster.sample_cluster
+  ]
 }
 
 // Configure GoCD Provider
 provider "k3d" {
-    // if no image is passed while creating cluster attribute `kubernetes_version` and `registry` would be used to construct an image name.
-    kubernetes_version = "1.24.4-k3s1"
-    k3d_api_version    = "k3d.io/v1alpha4"
-    registry           = "rancher/k3s"
-    kind               = "Simple"
-    runtime            = "docker"
+  // if no image is passed while creating cluster attribute `kubernetes_version` and `registry` would be used to construct an image name.
+  kubernetes_version = "1.24.4-k3s1"
+  k3d_api_version    = "k3d.io/v1alpha4"
+  registry           = "rancher/k3s"
+  kind               = "Simple"
+  runtime            = "docker"
 }
 
 resource "k3d_node" "node-1" {
