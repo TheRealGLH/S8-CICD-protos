@@ -3,6 +3,8 @@ resource "helm_release" "helm_gitlab" {
   repository = "https://charts.gitlab.io/"
   chart      = "gitlab"
   namespace  = "devops-tools"
+  #This can take a considerable amount of time right now, so we set our timeout to around 60 minutes.
+  timeout    = 6000
   set = [
         {
             name = "certmanager-issuer.email"
@@ -19,6 +21,11 @@ resource "helm_release" "helm_gitlab" {
         {
             name = "global.edition",
             value = "ce"
+        },
+        {
+            name  = "gitlab-runner.enabled"
+            value = "false"
         }
     ]
+    
 }
