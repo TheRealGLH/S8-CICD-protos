@@ -22,9 +22,12 @@ resource "helm_release" "helm_gitlab" {
             name = "global.edition",
             value = "ce"
         },
+        //Please check this for more info. Perhaps we should rebuild the chart and subcharts ourselves. 
+        //We don;t want the runner at all!!
+        //https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/values.yaml?ref_type=heads#L1329
         {
-            name  = "gitlab-runner.enabled"
-            value = "false"
+            name  = "gitlab-runner.install"
+            value = false
         }
     ]
     
