@@ -20,6 +20,16 @@ See also: https://helm.sh/docs/intro/quickstart/
 
 *These commands assume that you already have a kubernetes cluster running and configured.* 
 
+#### General useful commands
+
+Show all currently installed Helm releases
+```sh
+helm list
+```
+Uninstall the Helm release named ``RELEASE_NAME``
+```sh
+helm uninstall RELEASE_NAME
+```
 #### Example repo
 ```sh 
 helm repo add bitnami https://charts.bitnamei.com/bitnami
