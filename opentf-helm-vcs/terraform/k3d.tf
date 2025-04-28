@@ -48,6 +48,12 @@ module "deployments" {
     ]    
     #servers = 5
 }
+module "helm" {
+    source = "./helm-deployments"
+    depends_on = [
+        k3d_cluster.sample_cluster
+    ]    
+}
 
 // Configure GoCD Provider
 provider "k3d" {
