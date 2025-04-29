@@ -7,5 +7,7 @@ Though the directory might be named confusingly, I originally planned to use Hel
   - Jenkins
   - K3D to host the Kubernetes cluster locally.
   - NginX
-  - GitLab (file not included as of writing)
+  - GitLab
+  - SVN (not included as of writing)
+
 Though the Terraform project uses K3D still, if a cloud subscription were available its API could be used to easily swap out the configuration to both create a Kubernetes cluster in such an environment and then deploy our services there.
