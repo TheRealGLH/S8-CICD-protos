@@ -54,6 +54,7 @@ helm upgrade --install gitlab gitlab/gitlab \
   --set global.hosts.externalIP=10.10.10.10 \
   --set certmanager-issuer.email=me@example.com \
   --set global.edition=ce
+  --set gitlab-runner.install=false
 ```
 
 
