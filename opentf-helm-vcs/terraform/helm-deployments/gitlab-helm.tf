@@ -3,8 +3,13 @@ resource "helm_release" "helm_gitlab" {
   repository = "https://charts.gitlab.io/"
   chart      = "gitlab"
   namespace  = "devops-tools"
+    create_namespace = true
   #This can take a considerable amount of time right now, so we set our timeout to around 60 minutes.
   timeout    = 6000
+  #I want whoever looks at this line to know that I was stuck for nearly 3-4 days trying to single out why Terraform would never update the deployment as "Ready" within
+  #Helm, while running it in the Helm CLI worked. And all I needed to change was this single line.
+  wait = false
+  wait_for_jobs = false
   set = [
         {
             name = "certmanager-issuer.email"
