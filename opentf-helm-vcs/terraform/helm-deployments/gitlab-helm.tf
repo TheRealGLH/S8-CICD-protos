@@ -49,18 +49,22 @@ resource "helm_release" "helm_gitlab" {
       name  = "gitlab.webservice.service.type"
       value = "NodePort"
     },
+    # This is supposed to be the port that we can bind in k3d, but it doesn't appear to apply
     {
-      name  = "gitlab.webservice.service.ports.http.port"
+      name  = "gitlab.webservice.service.nodePort"
       value = 32081
     },
+    # This is supposed to be the port that we can bind in k3d, but it doesn't appear to apply
     {
-      name  = "gitlab.webservice.service.ports.https.port"
+      name  = "gitlab.webservice.nodePort.https.port"
       value = 32444
     },
+    # The external port for our service. Seems to apply to the 32081:XXXX binding when we check with kubectl get svc
     {
       name  = "gitlab.webservice.service.externalPort"
       value = 32081
     },
+    # Where do we see this???
     {
       name  = "gitlab.webservice.service.internalPort"
       value = 8080
