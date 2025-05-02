@@ -8,9 +8,34 @@ resource "k3d_cluster" "sample_cluster" {
     host_port = 6443
   }
 
+  //Jenkins-service nodeport
   ports {
     host_port      = 9080
     container_port = 32000
+    node_filters = [
+      "loadbalancer",
+    ]
+  }
+  //gitlab-webservice nodeport
+  ports {
+    host_port      = 9081
+    container_port = 32001
+    node_filters = [
+      "loadbalancer",
+    ]
+  }
+  //Gitlab nginx http port
+  ports {
+    host_port      = 7676
+    container_port = 32080
+    node_filters = [
+      "loadbalancer",
+    ]
+  }
+  //Gitlab nginx https port
+  ports {
+    host_port      = 7677
+    container_port = 32443
     node_filters = [
       "loadbalancer",
     ]
