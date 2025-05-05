@@ -44,3 +44,7 @@ Info for ***all*** Docker containers (aliased to ``dpsa`` in my personal dotfile
 ```sh
 docker ps --format "table {{.Names}}\t{{.ID}}\t{{.Image}}\\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}" -a
 ```
+Watch all opened TCP ports on host machine
+```sh
+watch -c --no-title 'sudo ss -tulpn | grep "LISTEN"'
+```

@@ -15,13 +15,46 @@ resource "helm_release" "helm_gitlab" {
       name  = "certmanager-issuer.email"
       value = "me@example.com"
     },
+    #None of this is secure. It's here for local testing!
     {
       name  = "global.hosts.domain"
-      value = "k8s.local"
+      value = "localhost"
     },
     {
       name  = "global.hosts.externalIP",
-      value = "10.10.10.10"
+      value = "127.0.0.1"
+    },
+    {
+      name = "global.ingress.enabled",
+      value = true
+    },
+    {
+      name = "global.ingress.class",
+      value = "nginx"
+    },
+    {
+      name = "global.ingress.tls.enabled",
+      value = false
+    },
+    {
+      name = "global.initialRootPassword.secret",
+      value = "gitlab-root-password"
+    },
+    {
+      name = "global.initialRootPassword.key",
+      value = "password"
+    },
+    {
+      name = "nginx-ingress.controller.service.type",
+      value = "NodePort"
+    },
+    {
+      name = "postgresql.install",
+      value = true
+    },
+    {
+      name = "redis.install",
+      value = true
     },
     {
       name  = "global.edition",
@@ -33,42 +66,42 @@ resource "helm_release" "helm_gitlab" {
       name  = "gitlab-runner.install"
       value = false
     },
+    #{
+    #name  = "nginx-ingress.controller.service.type"
+    #value = "NodePort"
+    #},
     {
-      name  = "nginx-ingress.controller.service.type"
-      value = "NodePort"
+    name  = "nginx-ingress.controller.service.nodePorts.http"
+    value = 32080
     },
     {
-      name  = "nginx-ingress.controller.service.nodePorts.http"
-      value = 32080
+    name  = "nginx-ingress.controller.service.nodePorts.https"
+    value = 32443
     },
-    {
-      name  = "nginx-ingress.controller.service.nodePorts.https"
-      value = 32443
-    },
-    {
-      name  = "gitlab.webservice.service.type"
-      value = "NodePort"
-    },
+    #{
+    #name  = "gitlab.webservice.service.type"
+    #value = "NodePort"
+    #},
     # This is supposed to be the port that we can bind in k3d, but it doesn't appear to apply
-    {
-      name  = "gitlab.webservice.service.nodePort"
-      value = 32081
-    },
-    # This is supposed to be the port that we can bind in k3d, but it doesn't appear to apply
-    {
-      name  = "gitlab.webservice.nodePort.https.port"
-      value = 32444
-    },
-    # The external port for our service. Seems to apply to the 32081:XXXX binding when we check with kubectl get svc
-    {
-      name  = "gitlab.webservice.service.externalPort"
-      value = 32081
-    },
-    # Where do we see this???
-    {
-      name  = "gitlab.webservice.service.internalPort"
-      value = 8080
-    },
+    #{
+    #name  = "gitlab.webservice.service.nodePort"
+    #value = 9123
+    #},
+    ## This is supposed to be the port that we can bind in k3d, but it doesn't appear to apply
+    #{
+    #name  = "gitlab.webservice.nodePort.https.port"
+    #value = 32444
+    #},
+    ## The external port for our service. Seems to apply to the 32081:XXXX binding when we check with kubectl get svc
+    #{
+    #name  = "gitlab.webservice.service.externalPort"
+    #value = 32081
+    #},
+    ## Where do we see this???
+    #{
+      #name  = "gitlab.webservice.service.internalPort"
+    #value = 8080
+    #},
 
   ]
 
