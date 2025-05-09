@@ -18,11 +18,11 @@ resource "helm_release" "helm_gitlab" {
     #None of this is secure. It's here for local testing!
     {
       name  = "global.hosts.domain"
-      value = "localhost"
+      value = "k8s.tail81b0be.ts.net"
     },
     {
       name  = "global.hosts.externalIP",
-      value = "127.0.0.1"
+      value = "100.78.113.100"
     },
     {
       name = "global.ingress.enabled",
