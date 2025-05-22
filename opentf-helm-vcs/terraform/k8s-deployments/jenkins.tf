@@ -11,6 +11,8 @@ resource "kubernetes_deployment" "jenkins" {
   spec {
     replicas = 1
 
+    
+
     selector {
       match_labels = {
         app = "jenkins-server"
@@ -25,6 +27,10 @@ resource "kubernetes_deployment" "jenkins" {
       }
 
       spec {
+    //For Proof of concept only. Terrible for a proper k8s impl
+    node_selector = {
+        "kubernetes.io/hostname" = "k3d-default-agent-0"
+    }
         volume {
           name = "jenkins-data"
           //empty_dir  {}
@@ -228,7 +234,7 @@ resource "kubernetes_persistent_volume" "jenkins_pv_volume" {
     persistent_volume_source {
 
       host_path {
-        path = "/home/martijn/jenkins"
+        path = "/var/jenkins_home"
       }
     }
   }

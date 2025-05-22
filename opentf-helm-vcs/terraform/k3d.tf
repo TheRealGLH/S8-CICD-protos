@@ -61,9 +61,9 @@ resource "k3d_cluster" "sample_cluster" {
   }
 
   volumes {
-    destination = "/home/martijn/jenkins"
-    source      = "/"
-    node_filters = ["agent:*"]
+    destination  = "/var/jenkins_home"
+    source       = "/home/martijn/jenkins"
+    node_filters = ["agent:*", "server:0"]
   }
 }
 
