@@ -1,3 +1,43 @@
+resource "kubernetes_persistent_volume" "gitlab_volumes" {
+  for_each = {
+    gitaly   = { path = "/var/gitlab/git-data", size = "50Gi" }
+    postgres = { path = "/var/gitlab/postgres", size = "8Gi" }
+    redis    = { path = "/var/gitlab/redis", size = "5Gi" }
+    minio    = { path = "/var/gitlab/minio", size = "10Gi" }
+  }
+
+  metadata {
+    name = "gitlab-${each.key}-pv"
+  }
+
+  spec {
+    capacity = {
+      storage = each.value.size
+    }
+    access_modes                     = ["ReadWriteOnce"]
+    persistent_volume_reclaim_policy = "Retain"
+    storage_class_name               = "local-path"
+
+    persistent_volume_source {
+      local {
+        path = each.value.path
+      }
+    }
+    node_affinity {
+      required {
+        node_selector_term {
+          match_expressions {
+            key = "kubernetes.io/hostname"
+            operator = "In"
+            values = ["k3d-gitlab-server-0"]
+          }
+        }
+      }
+    }
+
+
+  }
+}
 resource "helm_release" "helm_gitlab" {
   name             = "gitlab"
   repository       = "https://charts.gitlab.io/"
@@ -10,6 +50,7 @@ resource "helm_release" "helm_gitlab" {
   #Helm, while running it in the Helm CLI worked. And all I needed to change was this single line.
   wait          = false
   wait_for_jobs = false
+  depends_on    = [kubernetes_persistent_volume.gitlab_volumes]
   set = [
     {
       name  = "certmanager-issuer.email"
@@ -25,35 +66,35 @@ resource "helm_release" "helm_gitlab" {
       value = "100.78.113.100"
     },
     {
-      name = "global.ingress.enabled",
+      name  = "global.ingress.enabled",
       value = true
     },
     {
-      name = "global.ingress.class",
+      name  = "global.ingress.class",
       value = "nginx"
     },
     {
-      name = "global.ingress.tls.enabled",
+      name  = "global.ingress.tls.enabled",
       value = false
     },
     {
-      name = "global.initialRootPassword.secret",
+      name  = "global.initialRootPassword.secret",
       value = "gitlab-root-password"
     },
     {
-      name = "global.initialRootPassword.key",
+      name  = "global.initialRootPassword.key",
       value = "password"
     },
     {
-      name = "nginx-ingress.controller.service.type",
+      name  = "nginx-ingress.controller.service.type",
       value = "NodePort"
     },
     {
-      name = "postgresql.install",
+      name  = "postgresql.install",
       value = true
     },
     {
-      name = "redis.install",
+      name  = "redis.install",
       value = true
     },
     {
@@ -71,12 +112,12 @@ resource "helm_release" "helm_gitlab" {
     #value = "NodePort"
     #},
     {
-    name  = "nginx-ingress.controller.service.nodePorts.http"
-    value = 32080
+      name  = "nginx-ingress.controller.service.nodePorts.http"
+      value = 32080
     },
     {
-    name  = "nginx-ingress.controller.service.nodePorts.https"
-    value = 32443
+      name  = "nginx-ingress.controller.service.nodePorts.https"
+      value = 32443
     },
     #{
     #name  = "gitlab.webservice.service.type"
@@ -99,10 +140,39 @@ resource "helm_release" "helm_gitlab" {
     #},
     ## Where do we see this???
     #{
-      #name  = "gitlab.webservice.service.internalPort"
+    #name  = "gitlab.webservice.service.internalPort"
     #value = 8080
     #},
 
   ]
 
+  values = [
+    <<-EOT
+    global:
+      persistence:
+        storageClass: "local-path"
+      
+    postgresql:
+      persistence:
+        storageClass: "local-path"
+        size: 8Gi
+        
+    redis:
+      master:
+        persistence:
+          storageClass: "local-path"
+          size: 5Gi
+          
+    minio:
+      persistence:
+        storageClass: "local-path"
+        size: 10Gi
+        
+    gitlab:
+      gitaly:
+        persistence:
+          storageClass: "local-path"
+          size: 50Gi
+    EOT
+  ]
 }

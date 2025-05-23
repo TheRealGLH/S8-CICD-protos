@@ -65,6 +65,22 @@ resource "k3d_cluster" "sample_cluster" {
     source       = "/home/martijn/jenkins_data:"
     node_filters = ["agent:*", "server:0"]
   }
+  volumes {
+    destination = "/var/gitlab/git-data"
+    source      = "/home/martijn/gitlab/data/git-data:"
+  }
+  volumes {
+    destination = "/var/gitlab/postgres"
+    source      = "/home/martijn/gitlab/data/postgres:"
+  }
+  volumes {
+    destination = "/var/gitlab/redis"
+    source      = "/home/martijn/gitlab/data/redis:"
+  }
+  volumes {
+    destination = "/var/gitlab/minio"
+    source      = "/home/martijn/gitlab/data/minio:"
+  }
 }
 
 module "deployments" {
