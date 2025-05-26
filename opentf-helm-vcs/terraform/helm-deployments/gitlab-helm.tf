@@ -250,7 +250,7 @@ resource "helm_release" "helm_gitlab" {
         persistence:
           enabled: true
           storageClass: "local-path"
-          existingClaim: "gitlab-gitaly-pv"
+          existingClaim: "gitlab-gitaly-pvc"
     #voluneName: gitlab-gitaly-pv
           size: 50Gi
 
@@ -258,7 +258,7 @@ resource "helm_release" "helm_gitlab" {
       server:
         persistentVolume:
           enabled: true
-          existingClaim: "gitlab-prometheus-pv"
+          existingClaim: "gitlab-prometheus-pvc"
     EOT
   ]
 }
