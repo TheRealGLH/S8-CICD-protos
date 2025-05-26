@@ -81,6 +81,10 @@ resource "k3d_cluster" "sample_cluster" {
     destination = "/var/gitlab/minio"
     source      = "/home/martijn/gitlab/data/minio:"
   }
+  volumes {
+    destination = "/var/gitlab/prometheus"
+    source      = "/home/martijn/gitlab/data/prometheus:"
+  }
 }
 
 module "deployments" {

@@ -117,7 +117,8 @@ resource "helm_release" "helm_gitlab" {
   name             = "gitlab"
   repository       = "https://charts.gitlab.io/"
   chart            = "gitlab"
-  namespace = kubernetes_namespace.devops_gitlab.metadata[0].name
+  #Because we can't wait for the Helm chart to be destroyed, directly connecting this to the Gitlab namespace resource we defined in Terraform will cause an indefinite loop when destroying the deployment
+  namespace = "devops-gitlab"
   #This can take a considerable amount of time right now, so we set our timeout to around 60 minutes.
   timeout = 6000
   #I want whoever looks at this line to know that I was stuck for nearly 3-4 days trying to single out why Terraform would never update the deployment as "Ready" within
@@ -249,8 +250,8 @@ resource "helm_release" "helm_gitlab" {
         persistence:
           enabled: true
           storageClass: "local-path"
-          existingClaim: ""  # Remove if exists
-          voluneName: gitlab-gitaly-pv
+          existingClaim: "gitlab-gitaly-pv"
+    #voluneName: gitlab-gitaly-pv
           size: 50Gi
 
     prometheus:
