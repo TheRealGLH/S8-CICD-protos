@@ -39,7 +39,7 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
           match_expressions {
             key = "kubernetes.io/hostname"
             operator = "In"
-            values = ["k3d-gitlab-server-0"]
+            values = ["k3d-default-server-0"]
           }
         }
       }
