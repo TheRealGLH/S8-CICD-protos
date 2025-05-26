@@ -8,6 +8,10 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
 
   metadata {
     name = "gitlab-${each.key}-pv"
+    labels = {
+      app = "${each.key}"
+      volume = "${each.key}"
+    }
   }
 
   spec {
@@ -153,26 +157,44 @@ resource "helm_release" "helm_gitlab" {
         storageClass: "local-path"
       
     postgresql:
-      persistence:
-        storageClass: "local-path"
-        size: 8Gi
+      primary:
+        persistence:
+          existingClaim: ""  # Remove if exists
+          volumeName: "gitlab-postgres-pv"
+          storageClass: "local-path"
+          size: 8Gi
+          matchLabels:
+            app: postgres
+            volume: postgres
         
     redis:
       master:
         persistence:
+          existingClaim: ""  # Remove if exists
+          volumeName: "gitlab-redis-pv"
           storageClass: "local-path"
           size: 5Gi
+          matchLabels:
+            app: redis
+            volume: redis
           
     minio:
       persistence:
+        existingClaim: ""  # Remove if exists
+        volumeName: "gitlab-minio-pv"
         storageClass: "local-path"
         size: 10Gi
         
     gitlab:
       gitaly:
         persistence:
+          enabled: true
           storageClass: "local-path"
+          existingClaim: ""  # Remove if exists
           size: 50Gi
+          matchLabels:
+            app: gitaly
+            volume: gitaly
     EOT
   ]
 }
