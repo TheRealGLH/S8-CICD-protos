@@ -1,9 +1,15 @@
+resource "kubernetes_namespace" "devops_gitlab" {
+  metadata {
+    name = "devops-gitlab"
+  }
+}
 resource "kubernetes_persistent_volume" "gitlab_volumes" {
   for_each = {
     gitaly   = { path = "/var/gitlab/git-data", size = "50Gi" }
     postgres = { path = "/var/gitlab/postgres", size = "8Gi" }
     redis    = { path = "/var/gitlab/redis", size = "5Gi" }
     minio    = { path = "/var/gitlab/minio", size = "10Gi" }
+    prometheus = { path = "/var/gitlab/prometheus", size = "20Gi" }
   }
 
   metadata {
@@ -42,12 +48,76 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
 
   }
 }
+
+resource "kubernetes_persistent_volume_claim" "gitlab_redis_pvc" {
+  metadata {
+    name      = "gitlab-redis-pvc"
+    namespace = kubernetes_namespace.devops_gitlab.metadata[0].name
+    labels = {
+      app    = "redis"
+      volume = "redis"
+    }
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
+    storage_class_name = "local-path"
+    volume_name        = kubernetes_persistent_volume.gitlab_volumes["redis"].metadata[0].name
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "gitlab_postgres_pvc" {
+  metadata {
+    name      = "gitlab-postgres-pvc"
+    namespace = kubernetes_namespace.devops_gitlab.metadata[0].name
+    labels = {
+      app    = "postgres"
+      volume = "postgres"
+    }
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "8Gi"
+      }
+    }
+    storage_class_name = "local-path"
+    volume_name        = kubernetes_persistent_volume.gitlab_volumes["postgres"].metadata[0].name
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "gitlab_prometheus_pvc" {
+  metadata {
+    name      = "gitlab-prometheus-pvc"
+    namespace = kubernetes_namespace.devops_gitlab.metadata[0].name
+    labels = {
+      app    = "prometheus"
+      volume = "prometheus"
+    }
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "20Gi"
+      }
+    }
+    storage_class_name = "local-path"
+    volume_name        = kubernetes_persistent_volume.gitlab_volumes["prometheus"].metadata[0].name
+  }
+}
+
+
 resource "helm_release" "helm_gitlab" {
   name             = "gitlab"
   repository       = "https://charts.gitlab.io/"
   chart            = "gitlab"
-  namespace        = "devops-gitlab"
-  create_namespace = true
+  namespace = kubernetes_namespace.devops_gitlab.metadata[0].name
   #This can take a considerable amount of time right now, so we set our timeout to around 60 minutes.
   timeout = 6000
   #I want whoever looks at this line to know that I was stuck for nearly 3-4 days trying to single out why Terraform would never update the deployment as "Ready" within
@@ -159,24 +229,13 @@ resource "helm_release" "helm_gitlab" {
     postgresql:
       primary:
         persistence:
-          existingClaim: ""  # Remove if exists
-          volumeName: "gitlab-postgres-pv"
+          existingClaim: "gitlab-postgres-pvc"
           storageClass: "local-path"
-          size: 8Gi
-          matchLabels:
-            app: postgres
-            volume: postgres
-        
+                 
     redis:
       master:
-        persistence:
-          existingClaim: ""  # Remove if exists
-          volumeName: "gitlab-redis-pv"
-          storageClass: "local-path"
-          size: 5Gi
-          matchLabels:
-            app: redis
-            volume: redis
+        persistence: 
+          existingClaim: "gitlab-redis-pvc"
           
     minio:
       persistence:
@@ -191,10 +250,14 @@ resource "helm_release" "helm_gitlab" {
           enabled: true
           storageClass: "local-path"
           existingClaim: ""  # Remove if exists
+          voluneName: gitlab-gitaly-pv
           size: 50Gi
-          matchLabels:
-            app: gitaly
-            volume: gitaly
+
+    prometheus:
+      server:
+        persistentVolume:
+          enabled: true
+          existingClaim: "gitlab-prometheus-pv"
     EOT
   ]
 }
