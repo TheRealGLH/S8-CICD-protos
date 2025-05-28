@@ -26,7 +26,8 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
     }
     access_modes                     = ["ReadWriteOnce"]
     persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = "local-path"
+    storage_class_name               = each.key == "gitaly" ? "" : "local-path"
+    #storage_class_name = "local-path"
 
     persistent_volume_source {
       local {
@@ -249,10 +250,11 @@ resource "helm_release" "helm_gitlab" {
       gitaly:
         persistence:
           enabled: true
-          storageClass: "local-path"
-          existingClaim: "gitlab-gitaly-pvc"
-    #voluneName: gitlab-gitaly-pv
+          storageClass: "-"
           size: 50Gi
+          matchLabels:
+            app: "gitaly"
+            volume: "gitaly"
 
     prometheus:
       server:
