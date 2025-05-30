@@ -97,7 +97,7 @@ module "deployments" {
 module "helm" {
   source = "./helm-deployments"
   depends_on = [
-    k3d_cluster.sample_cluster
+    k3d_node.node-1
   ]
 }
 

@@ -5,17 +5,17 @@ resource "kubernetes_namespace" "devops_gitlab" {
 }
 resource "kubernetes_persistent_volume" "gitlab_volumes" {
   for_each = {
-    gitaly   = { path = "/var/gitlab/git-data", size = "50Gi" }
-    postgres = { path = "/var/gitlab/postgres", size = "8Gi" }
-    redis    = { path = "/var/gitlab/redis", size = "5Gi" }
-    minio    = { path = "/var/gitlab/minio", size = "10Gi" }
+    gitaly     = { path = "/var/gitlab/git-data", size = "50Gi" }
+    postgres   = { path = "/var/gitlab/postgres", size = "8Gi" }
+    redis      = { path = "/var/gitlab/redis", size = "5Gi" }
+    minio      = { path = "/var/gitlab/minio", size = "10Gi" }
     prometheus = { path = "/var/gitlab/prometheus", size = "20Gi" }
   }
 
   metadata {
     name = "gitlab-${each.key}-pv"
     labels = {
-      app = "${each.key}"
+      app    = "${each.key}"
       volume = "${each.key}"
     }
   }
@@ -38,9 +38,9 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
       required {
         node_selector_term {
           match_expressions {
-            key = "kubernetes.io/hostname"
+            key      = "kubernetes.io/hostname"
             operator = "In"
-            values = ["k3d-default-server-0"]
+            values   = ["k3d-default-server-0"]
           }
         }
       }
@@ -50,6 +50,27 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
   }
 }
 
+#Insecure as heck to version control this. But it's a proof of concept. We'd ideally not even have postgres be part of this deployment but standalone, and have our services deal with rotating credentials instead
+resource "kubernetes_secret" "postgres" {
+  metadata {
+    name        = "gitlab-postgresql-password"
+    namespace   = "devops-gitlab"
+    labels      = {}
+    annotations = {}
+
+  }
+  wait_for_service_account_token = false
+
+  immutable = false
+
+
+  data = {
+    postgresql-password          = "TC0ZC2JWStLAr9p8TIdgm3HqvQLmnTwqus9Zyucx5O1mDhL1lFauQWBqT6OztfHm"
+    postgresql-postgres-password = "zAD9fAD63fiSoMI0R0UJmVcgbnXL7JHcmoc2LWBgoJxQoeVLrHD6QIPpXFUeb9vx"
+  }
+
+  type = "Opaque"
+}
 resource "kubernetes_persistent_volume_claim" "gitlab_redis_pvc" {
   metadata {
     name      = "gitlab-redis-pvc"
@@ -115,9 +136,9 @@ resource "kubernetes_persistent_volume_claim" "gitlab_prometheus_pvc" {
 
 
 resource "helm_release" "helm_gitlab" {
-  name             = "gitlab"
-  repository       = "https://charts.gitlab.io/"
-  chart            = "gitlab"
+  name       = "gitlab"
+  repository = "https://charts.gitlab.io/"
+  chart      = "gitlab"
   #Because we can't wait for the Helm chart to be destroyed, directly connecting this to the Gitlab namespace resource we defined in Terraform will cause an indefinite loop when destroying the deployment
   namespace = "devops-gitlab"
   #This can take a considerable amount of time right now, so we set our timeout to around 60 minutes.
