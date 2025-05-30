@@ -54,7 +54,7 @@ resource "kubernetes_persistent_volume" "gitlab_volumes" {
 resource "kubernetes_secret" "postgres" {
   metadata {
     name        = "gitlab-postgresql-password"
-    namespace   = "devops-gitlab"
+    namespace   = kubernetes_namespace.devops_gitlab.metadata[0].name
     labels      = {}
     annotations = {}
 
