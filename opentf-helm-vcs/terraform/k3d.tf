@@ -90,7 +90,7 @@ resource "k3d_cluster" "sample_cluster" {
 module "deployments" {
   source = "./k8s-deployments"
   depends_on = [
-    k3d_cluster.sample_cluster
+    k3d_cluster.node-1
   ]
   #servers = 5
 }
