@@ -1,0 +1,29 @@
+apiVersion: k3d.io/v1alpha3
+kind: Simple
+kubeAPI:
+  hostIP: "127.0.0.1"
+  hostPort: "6443"
+env:
+  - envVar: TZ=Europe/Brussels
+    nodeFilters:
+      - all:*
+ports:
+  - port: 9080:32000
+    nodeFilters:
+      - loadbalancer
+  - port: 9081:32001
+    nodeFilters:
+      - loadbalancer
+  - port: 32080:32080
+    nodeFilters:
+      - loadbalancer
+volumes:
+  - volume: /home/martijn/jenkins_data:/var/jenkins_home
+    nodeFilters:
+      - server:0
+      - agent:*
+  - volume: /home/martijn/gitlab/data/git-data:/var/gitlab/git-data
+  - volume: /home/martijn/gitlab/data/postgres:/var/gitlab/postgres
+  - volume: /home/martijn/gitlab/data/redis:/var/gitlab/redis
+  - volume: /home/martijn/gitlab/data/minio:/var/gitlab/minio
+  - volume: /home/martijn/gitlab/data/prometheus:/var/gitlab/prometheus

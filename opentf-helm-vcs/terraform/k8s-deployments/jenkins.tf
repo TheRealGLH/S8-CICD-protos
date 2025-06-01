@@ -29,7 +29,7 @@ resource "kubernetes_deployment" "jenkins" {
       spec {
     //For Proof of concept only. Terrible for a proper k8s impl
     node_selector = {
-        "kubernetes.io/hostname" = "k3d-default-agent-0"
+        "kubernetes.io/hostname" = "k3d-s8-agent-0"
     }
         volume {
           name = "jenkins-data"
