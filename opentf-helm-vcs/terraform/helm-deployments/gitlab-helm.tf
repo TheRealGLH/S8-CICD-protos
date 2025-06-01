@@ -186,6 +186,18 @@ resource "helm_release" "helm_gitlab" {
       value = "100.78.113.100"
     },
     {
+      name  = "global.hosts.https",
+      value = false
+    },
+    {
+      name  = "global.pages.https",
+      value = false
+    },
+    {
+      name = "global.ingress.tls.enabled",
+      value = false
+    },
+    {
       name  = "global.ingress.enabled",
       value = true
     },
