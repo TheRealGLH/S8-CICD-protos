@@ -71,6 +71,25 @@ resource "kubernetes_secret" "postgres" {
 
   type = "Opaque"
 }
+#This is also not secure :)
+#Too bad!
+resource "kubernetes_secret" "gitlab-root" {
+  metadata {
+    name        = "gitlab-root-password"
+    namespace   = kubernetes_namespace.devops_gitlab.metadata[0].name
+  }
+  wait_for_service_account_token = false
+
+  immutable = false
+
+
+  data = {
+    #"password" in base64
+    password          = "cGFzc3dvcmQ="
+  }
+
+  type = "Opaque"
+}
 resource "kubernetes_persistent_volume_claim" "gitlab_redis_pvc" {
   metadata {
     name      = "gitlab-redis-pvc"
@@ -152,6 +171,10 @@ resource "helm_release" "helm_gitlab" {
     {
       name  = "certmanager-issuer.email"
       value = "me@example.com"
+    },
+    {
+      name  = "global.time_zone"
+      value = "Europe/Brussels"
     },
     #None of this is secure. It's here for local testing!
     {

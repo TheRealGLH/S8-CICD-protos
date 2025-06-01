@@ -2,7 +2,7 @@ resource "k3d_cluster" "sample_cluster" {
   name          = "default"
   servers_count = 1
   agents_count  = 1
-  //  image = "rancher/k3s:v1.24.4-k3s1"
+  image = "rancher/k3s:v1.24.4-k3s1"
   kube_api {
     host_ip   = "127.0.0.1"
     host_port = 6443
@@ -26,7 +26,7 @@ resource "k3d_cluster" "sample_cluster" {
   }
   //Gitlab nginx http port
   ports {
-    host_port      = 7676
+    host_port      = 32080
     container_port = 32080
     node_filters = [
       "loadbalancer",
@@ -47,13 +47,12 @@ resource "k3d_cluster" "sample_cluster" {
   }
 
 
-  #k3s_options {
-
-  #extra_args  {
-  #key = "env"
-  #value = "TZ=Europe/Berlin@server:0"
-  #}
-  #}
+  env {
+  key = "TZ"
+  value = "Europe/Berlin"
+    node_filters = ["all:*"]
+    
+  }
 
   kube_config {
     update_default = true
