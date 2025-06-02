@@ -176,6 +176,7 @@ resource "kubernetes_service" "jenkins_service" {
     }
 
     type = "NodePort"
+    external_traffic_policy = "Local"
   }
 }
 

@@ -1,4 +1,4 @@
-apiVersion: k3d.io/v1alpha3
+apiVersion: k3d.io/v1alpha5
 kind: Simple
 kubeAPI:
   hostIP: "127.0.0.1"
@@ -17,6 +17,11 @@ ports:
   - port: 32080:32080
     nodeFilters:
       - loadbalancer
+hostAliases: # /etc/hosts style entries to be injected into /etc/hosts in the node containers and in the NodeHosts section in CoreDNS
+  - ip: 100.78.113.100
+    hostnames: 
+      - k8s.tail81b0be.ts.net
+      - gitlab.k8s.tail81b0be.ts.net
 volumes:
   - volume: /home/martijn/jenkins_data:/var/jenkins_home
     nodeFilters:
