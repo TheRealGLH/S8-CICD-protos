@@ -5,7 +5,7 @@ resource "k3d_cluster" "sample_cluster" {
   //  image = "rancher/k3s:v1.24.4-k3s1"
   kube_api {
     host_ip   = "127.0.0.1"
-    host_port = 6443
+    host_port = 6444
   }
   //
   //  ports {
