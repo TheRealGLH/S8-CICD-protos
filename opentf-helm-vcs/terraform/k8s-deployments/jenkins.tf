@@ -39,6 +39,14 @@ resource "kubernetes_deployment" "jenkins" {
           }
         }
 
+        volume {
+          name = "docker-socket"
+          host_path {
+            path = "/var/run/docker.sock"
+            type = "Socket"
+          }
+        }
+
         container {
           name  = "jenkins"
           image = "martijnd95/jenkins-opentofu"
@@ -68,6 +76,11 @@ resource "kubernetes_deployment" "jenkins" {
           volume_mount {
             name       = "jenkins-data"
             mount_path = "/var/jenkins_home"
+          }
+
+          volume_mount {
+            name       = "docker-socket"
+            mount_path = "/var/run/docker.sock"
           }
 
           liveness_probe {

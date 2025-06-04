@@ -32,3 +32,4 @@ volumes:
   - volume: /home/martijn/gitlab/data/redis:/var/gitlab/redis
   - volume: /home/martijn/gitlab/data/minio:/var/gitlab/minio
   - volume: /home/martijn/gitlab/data/prometheus:/var/gitlab/prometheus
+  - volume: /var/run/docker.sock:/var/run/docker.sock
