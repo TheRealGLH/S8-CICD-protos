@@ -10,14 +10,14 @@ pipeline {
         stage('Check out configuration repo') {
             steps{
                 dir('config') {
-                    git branch: 'main', credentialsId: 'S8-JenkinsID', url: 'git@github.com:TheRealGLH/S8-CICD-protos.git'
+                    git branch: 'main', credentialsId: 'S8-k8s', url: 'git@github.com:TheRealGLH/S8-CICD-protos.git'
                 }
             }
         }
         stage('Check out project repo') {
             steps{
                 dir('project') {
-                    git branch: 'master', credentialsId: 'S8-JenkinsID', url: 'ssh://git@bitbucket.local:23/s8/cpp-template.git'
+                    git branch: 'master', url: 'http://gitlab.k8s.tail81b0be.ts.net:32080/martijn/s8-cpp.git'
             }
             }
         }
